@@ -1,0 +1,118 @@
+{
+  "build": "h8ffe710_1",
+  "build_number": 1,
+  "channel": "https://conda.anaconda.org/conda-forge/win-64",
+  "constrains": [],
+  "depends": [
+    "vc >=14.1,<15.0a0",
+    "vs2015_runtime >=14.16.27012"
+  ],
+  "extracted_package_dir": "D:\\Apps\\miniconda3\\pkgs\\libogg-1.3.4-h8ffe710_1",
+  "files": [
+    "Library/bin/ogg.dll",
+    "Library/include/ogg/config_types.h",
+    "Library/include/ogg/ogg.h",
+    "Library/include/ogg/os_types.h",
+    "Library/lib/cmake/Ogg/OggConfig.cmake",
+    "Library/lib/cmake/Ogg/OggConfigVersion.cmake",
+    "Library/lib/cmake/Ogg/OggTargets-release.cmake",
+    "Library/lib/cmake/Ogg/OggTargets.cmake",
+    "Library/lib/ogg.lib",
+    "Library/lib/pkgconfig/ogg.pc",
+    ".nonadmin"
+  ],
+  "fn": "libogg-1.3.4-h8ffe710_1.tar.bz2",
+  "license": "BSD-3-Clause",
+  "license_family": "BSD",
+  "link": {
+    "source": "D:\\Apps\\miniconda3\\pkgs\\libogg-1.3.4-h8ffe710_1",
+    "type": 1
+  },
+  "md5": "04286d905a0dcb7f7d4a12bdfe02516d",
+  "name": "libogg",
+  "package_tarball_full_path": "D:\\Apps\\miniconda3\\pkgs\\libogg-1.3.4-h8ffe710_1.tar.bz2",
+  "paths_data": {
+    "paths": [
+      {
+        "_path": "Library/bin/ogg.dll",
+        "path_type": "hardlink",
+        "sha256": "e38dc37ed5478f1d7c2e5d9c5ea336f55d313af8acf98515b1e082f1d7bbd79a",
+        "sha256_in_prefix": "e38dc37ed5478f1d7c2e5d9c5ea336f55d313af8acf98515b1e082f1d7bbd79a",
+        "size_in_bytes": 29184
+      },
+      {
+        "_path": "Library/include/ogg/config_types.h",
+        "path_type": "hardlink",
+        "sha256": "2200f7d8664cdf27cd7d007f22fc70d1168e842f2af4d541b2ddaf7659375e95",
+        "sha256_in_prefix": "2200f7d8664cdf27cd7d007f22fc70d1168e842f2af4d541b2ddaf7659375e95",
+        "size_in_bytes": 564
+      },
+      {
+        "_path": "Library/include/ogg/ogg.h",
+        "path_type": "hardlink",
+        "sha256": "aad86109c1fdb377738675a63e0b19859e06ada25ae5c59c290ca7263d1dc4ca",
+        "sha256_in_prefix": "aad86109c1fdb377738675a63e0b19859e06ada25ae5c59c290ca7263d1dc4ca",
+        "size_in_bytes": 8373
+      },
+      {
+        "_path": "Library/include/ogg/os_types.h",
+        "path_type": "hardlink",
+        "sha256": "3bbab6a5d31e3c25c6080252b042afb87028e3ffff100e3e0285648b250b70f4",
+        "sha256_in_prefix": "3bbab6a5d31e3c25c6080252b042afb87028e3ffff100e3e0285648b250b70f4",
+        "size_in_bytes": 4781
+      },
+      {
+        "_path": "Library/lib/cmake/Ogg/OggConfig.cmake",
+        "path_type": "hardlink",
+        "sha256": "239742193eff9debec89f4db6cf62ab2beb6c216cd7976662f3558118bd79ab3",
+        "sha256_in_prefix": "239742193eff9debec89f4db6cf62ab2beb6c216cd7976662f3558118bd79ab3",
+        "size_in_bytes": 1342
+      },
+      {
+        "_path": "Library/lib/cmake/Ogg/OggConfigVersion.cmake",
+        "path_type": "hardlink",
+        "sha256": "037bc87f26431af66ae71a28edcba62973e3f64e5ba1b8247be1b2f1712cd76a",
+        "sha256_in_prefix": "037bc87f26431af66ae71a28edcba62973e3f64e5ba1b8247be1b2f1712cd76a",
+        "size_in_bytes": 2809
+      },
+      {
+        "_path": "Library/lib/cmake/Ogg/OggTargets-release.cmake",
+        "path_type": "hardlink",
+        "sha256": "fe672d423b9eff279f0c4af362a6679eef73993cefe3b5a81c1fd0be12439e41",
+        "sha256_in_prefix": "fe672d423b9eff279f0c4af362a6679eef73993cefe3b5a81c1fd0be12439e41",
+        "size_in_bytes": 852
+      },
+      {
+        "_path": "Library/lib/cmake/Ogg/OggTargets.cmake",
+        "path_type": "hardlink",
+        "sha256": "2cf50f06077d5167af0fb7b5940b54b4f98605c2d6cc73f618034ec6c6276db6",
+        "sha256_in_prefix": "2cf50f06077d5167af0fb7b5940b54b4f98605c2d6cc73f618034ec6c6276db6",
+        "size_in_bytes": 3325
+      },
+      {
+        "_path": "Library/lib/ogg.lib",
+        "path_type": "hardlink",
+        "sha256": "cad2e1b4f3c89873a1476e81a0defcf377d4f992ac7d95aaacb271b237bbc544",
+        "sha256_in_prefix": "cad2e1b4f3c89873a1476e81a0defcf377d4f992ac7d95aaacb271b237bbc544",
+        "size_in_bytes": 14758
+      },
+      {
+        "_path": "Library/lib/pkgconfig/ogg.pc",
+        "file_mode": "text",
+        "path_type": "hardlink",
+        "prefix_placeholder": "/opt/anaconda1anaconda2anaconda3",
+        "sha256": "1a9ed70fd01c36349dc6971b0c5c4ead83856468cbf48a623458944a1b6143fe",
+        "sha256_in_prefix": "1a9ed70fd01c36349dc6971b0c5c4ead83856468cbf48a623458944a1b6143fe",
+        "size_in_bytes": 419
+      }
+    ],
+    "paths_version": 1
+  },
+  "requested_spec": "None",
+  "sha256": "ef20f04ad2121a07e074b34bfc211587df18180e680963f5c02c54d1951b9ee6",
+  "size": 35187,
+  "subdir": "win-64",
+  "timestamp": 1610382533961,
+  "url": "https://conda.anaconda.org/conda-forge/win-64/libogg-1.3.4-h8ffe710_1.tar.bz2",
+  "version": "1.3.4"
+}

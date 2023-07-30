@@ -1,0 +1,49 @@
+{
+  "build": "default_heb8d277_1",
+  "build_number": 1,
+  "channel": "https://conda.anaconda.org/conda-forge/win-64",
+  "constrains": [],
+  "depends": [
+    "libclang13 16.0.6 default_hc80b9e7_1",
+    "libxml2 >=2.11.4,<2.12.0a0",
+    "libzlib >=1.2.13,<1.3.0a0",
+    "ucrt >=10.0.20348.0",
+    "vc >=14.2,<15",
+    "vc14_runtime >=14.29.30139",
+    "zstd >=1.5.2,<1.6.0a0"
+  ],
+  "extracted_package_dir": "D:\\Apps\\miniconda3\\pkgs\\libclang-16.0.6-default_heb8d277_1",
+  "files": [
+    "Library/lib/libclang.lib",
+    ".nonadmin"
+  ],
+  "fn": "libclang-16.0.6-default_heb8d277_1.conda",
+  "license": "Apache-2.0 WITH LLVM-exception",
+  "license_family": "Apache",
+  "link": {
+    "source": "D:\\Apps\\miniconda3\\pkgs\\libclang-16.0.6-default_heb8d277_1",
+    "type": 1
+  },
+  "md5": "d73d862f5654709b23cf782fff51ce30",
+  "name": "libclang",
+  "package_tarball_full_path": "D:\\Apps\\miniconda3\\pkgs\\libclang-16.0.6-default_heb8d277_1.conda",
+  "paths_data": {
+    "paths": [
+      {
+        "_path": "Library/lib/libclang.lib",
+        "path_type": "hardlink",
+        "sha256": "267c41bd1c5c0b9767b5247e6928d74166ca41de7cb02304267a1002007e0e81",
+        "sha256_in_prefix": "267c41bd1c5c0b9767b5247e6928d74166ca41de7cb02304267a1002007e0e81",
+        "size_in_bytes": 108906
+      }
+    ],
+    "paths_version": 1
+  },
+  "requested_spec": "None",
+  "sha256": "d546fcc53068f608bdcf9391c03c559eae9b1ae8b107c99840c93144ef88dea8",
+  "size": 35727,
+  "subdir": "win-64",
+  "timestamp": 1690052722193,
+  "url": "https://conda.anaconda.org/conda-forge/win-64/libclang-16.0.6-default_heb8d277_1.conda",
+  "version": "16.0.6"
+}

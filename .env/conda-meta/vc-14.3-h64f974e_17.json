@@ -1,0 +1,35 @@
+{
+  "build": "h64f974e_17",
+  "build_number": 17,
+  "channel": "https://conda.anaconda.org/conda-forge/win-64",
+  "constrains": [],
+  "depends": [
+    "vc14_runtime >=14.36.32532"
+  ],
+  "extracted_package_dir": "D:\\Apps\\miniconda3\\pkgs\\vc-14.3-h64f974e_17",
+  "files": [
+    ".nonadmin"
+  ],
+  "fn": "vc-14.3-h64f974e_17.conda",
+  "license": "BSD-3-Clause",
+  "license_family": "BSD",
+  "link": {
+    "source": "D:\\Apps\\miniconda3\\pkgs\\vc-14.3-h64f974e_17",
+    "type": 1
+  },
+  "md5": "67ff6791f235bb606659bf2a5c169191",
+  "name": "vc",
+  "package_tarball_full_path": "D:\\Apps\\miniconda3\\pkgs\\vc-14.3-h64f974e_17.conda",
+  "paths_data": {
+    "paths": [],
+    "paths_version": 1
+  },
+  "requested_spec": "None",
+  "sha256": "86ae94bf680980776aa761c2b0909a0ddbe1f817e7eeb8b16a1730f10f8891b6",
+  "size": 17176,
+  "subdir": "win-64",
+  "timestamp": 1688020629925,
+  "track_features": "vc14",
+  "url": "https://conda.anaconda.org/conda-forge/win-64/vc-14.3-h64f974e_17.conda",
+  "version": "14.3"
+}

@@ -1,0 +1,45 @@
+{
+  "build": "hcd874cb_1001",
+  "build_number": 1001,
+  "channel": "https://conda.anaconda.org/conda-forge/win-64",
+  "constrains": [],
+  "depends": [
+    "m2w64-gcc-libs"
+  ],
+  "extracted_package_dir": "D:\\Apps\\miniconda3\\pkgs\\pthread-stubs-0.4-hcd874cb_1001",
+  "files": [
+    "Library/lib/pkgconfig/pthread-stubs.pc",
+    ".nonadmin"
+  ],
+  "fn": "pthread-stubs-0.4-hcd874cb_1001.tar.bz2",
+  "license": "MIT",
+  "license_family": "MIT",
+  "link": {
+    "source": "D:\\Apps\\miniconda3\\pkgs\\pthread-stubs-0.4-hcd874cb_1001",
+    "type": 1
+  },
+  "md5": "a1f820480193ea83582b13249a7e7bd9",
+  "name": "pthread-stubs",
+  "package_tarball_full_path": "D:\\Apps\\miniconda3\\pkgs\\pthread-stubs-0.4-hcd874cb_1001.tar.bz2",
+  "paths_data": {
+    "paths": [
+      {
+        "_path": "Library/lib/pkgconfig/pthread-stubs.pc",
+        "file_mode": "text",
+        "path_type": "hardlink",
+        "prefix_placeholder": "D:/bld/pthread-stubs_1606147490938/_h_env",
+        "sha256": "3211947941318fe5bd11481dcdc061226ea7f018885abaf0109e028230ae3b94",
+        "sha256_in_prefix": "63cbf0dc10a152b8b312f49303da879f8377e2b13ccfbbadb276124909cd6fe2",
+        "size_in_bytes": 284
+      }
+    ],
+    "paths_version": 1
+  },
+  "requested_spec": "None",
+  "sha256": "bb5a6ddf1a609a63addd6d7b488b0f58d05092ea84e9203283409bff539e202a",
+  "size": 6417,
+  "subdir": "win-64",
+  "timestamp": 1606147814351,
+  "url": "https://conda.anaconda.org/conda-forge/win-64/pthread-stubs-0.4-hcd874cb_1001.tar.bz2",
+  "version": "0.4"
+}

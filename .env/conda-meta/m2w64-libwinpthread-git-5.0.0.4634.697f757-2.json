@@ -1,0 +1,58 @@
+{
+  "build": "2",
+  "build_number": 2,
+  "channel": "https://conda.anaconda.org/conda-forge/win-64",
+  "constrains": [],
+  "depends": [
+    "msys2-conda-epoch >=20160418"
+  ],
+  "extracted_package_dir": "D:\\Apps\\miniconda3\\pkgs\\m2w64-libwinpthread-git-5.0.0.4634.697f757-2",
+  "files": [
+    "Library/mingw-w64/bin/libwinpthread-1.dll",
+    "Library/mingw-w64/share/licenses/libwinpthread/COPYING",
+    "Library/mingw-w64/share/licenses/libwinpthread/mingw-w64-libraries/winpthreads/COPYING",
+    ".nonadmin"
+  ],
+  "fn": "m2w64-libwinpthread-git-5.0.0.4634.697f757-2.tar.bz2",
+  "license": "MIT, BSD",
+  "link": {
+    "source": "D:\\Apps\\miniconda3\\pkgs\\m2w64-libwinpthread-git-5.0.0.4634.697f757-2",
+    "type": 1
+  },
+  "md5": "774130a326dee16f1ceb05cc687ee4f0",
+  "name": "m2w64-libwinpthread-git",
+  "package_tarball_full_path": "D:\\Apps\\miniconda3\\pkgs\\m2w64-libwinpthread-git-5.0.0.4634.697f757-2.tar.bz2",
+  "paths_data": {
+    "paths": [
+      {
+        "_path": "Library/mingw-w64/bin/libwinpthread-1.dll",
+        "path_type": "hardlink",
+        "sha256": "6f6359c0fda76adceb781d3797a982cb3bb5f491a1ed206afa00c63681236bd2",
+        "sha256_in_prefix": "6f6359c0fda76adceb781d3797a982cb3bb5f491a1ed206afa00c63681236bd2",
+        "size_in_bytes": 56978
+      },
+      {
+        "_path": "Library/mingw-w64/share/licenses/libwinpthread/COPYING",
+        "path_type": "hardlink",
+        "sha256": "99a69660981156c21336fdb5661f89341b013c94e4bf9e1c7467b4745718397f",
+        "sha256_in_prefix": "99a69660981156c21336fdb5661f89341b013c94e4bf9e1c7467b4745718397f",
+        "size_in_bytes": 2326
+      },
+      {
+        "_path": "Library/mingw-w64/share/licenses/libwinpthread/mingw-w64-libraries/winpthreads/COPYING",
+        "path_type": "hardlink",
+        "sha256": "63263614cdd29f2f93cba85e992f041b31f9fc7b4033692f31269489a8a1b177",
+        "sha256_in_prefix": "63263614cdd29f2f93cba85e992f041b31f9fc7b4033692f31269489a8a1b177",
+        "size_in_bytes": 2883
+      }
+    ],
+    "paths_version": 1
+  },
+  "requested_spec": "None",
+  "sha256": "f63a09b2cae7defae0480f1740015d6235f1861afa6fe2e2d3e10bd0d1314ee0",
+  "size": 31928,
+  "subdir": "win-64",
+  "timestamp": 1608166099896,
+  "url": "https://conda.anaconda.org/conda-forge/win-64/m2w64-libwinpthread-git-5.0.0.4634.697f757-2.tar.bz2",
+  "version": "5.0.0.4634.697f757"
+}

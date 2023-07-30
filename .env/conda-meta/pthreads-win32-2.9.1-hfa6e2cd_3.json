@@ -1,0 +1,90 @@
+{
+  "build": "hfa6e2cd_3",
+  "build_number": 3,
+  "channel": "https://conda.anaconda.org/conda-forge/win-64",
+  "constrains": [],
+  "depends": [
+    "vc 14.*"
+  ],
+  "extracted_package_dir": "D:\\Apps\\miniconda3\\pkgs\\pthreads-win32-2.9.1-hfa6e2cd_3",
+  "files": [
+    "Library/bin/pthreadVSE2.dll",
+    "Library/include/pthread.h",
+    "Library/include/sched.h",
+    "Library/include/semaphore.h",
+    "Library/lib/pthread.lib",
+    "Library/lib/pthreads.lib",
+    "Library/lib/pthreads_static.lib",
+    ".nonadmin"
+  ],
+  "fn": "pthreads-win32-2.9.1-hfa6e2cd_3.tar.bz2",
+  "license": "LGPL 2",
+  "link": {
+    "source": "D:\\Apps\\miniconda3\\pkgs\\pthreads-win32-2.9.1-hfa6e2cd_3",
+    "type": 1
+  },
+  "md5": "e2da8758d7d51ff6aa78a14dfb9dbed4",
+  "name": "pthreads-win32",
+  "package_tarball_full_path": "D:\\Apps\\miniconda3\\pkgs\\pthreads-win32-2.9.1-hfa6e2cd_3.tar.bz2",
+  "paths_data": {
+    "paths": [
+      {
+        "_path": "Library/bin/pthreadVSE2.dll",
+        "path_type": "hardlink",
+        "sha256": "73873a9db28f9db9d608bcbf50bf057dcba8f50d7608b664386dac9dbb453c41",
+        "sha256_in_prefix": "73873a9db28f9db9d608bcbf50bf057dcba8f50d7608b664386dac9dbb453c41",
+        "size_in_bytes": 58368
+      },
+      {
+        "_path": "Library/include/pthread.h",
+        "path_type": "hardlink",
+        "sha256": "a784cde5d4b7cb931b34ce28b6be123225c87b5a8a9e6a0ea078c2f56a66f458",
+        "sha256_in_prefix": "a784cde5d4b7cb931b34ce28b6be123225c87b5a8a9e6a0ea078c2f56a66f458",
+        "size_in_bytes": 42622
+      },
+      {
+        "_path": "Library/include/sched.h",
+        "path_type": "hardlink",
+        "sha256": "668bb80d6d5458f23c3f44fd5834ed8fc25ce31195208075e0d0d523c01d65b7",
+        "sha256_in_prefix": "668bb80d6d5458f23c3f44fd5834ed8fc25ce31195208075e0d0d523c01d65b7",
+        "size_in_bytes": 5020
+      },
+      {
+        "_path": "Library/include/semaphore.h",
+        "path_type": "hardlink",
+        "sha256": "a094d424523b547a4a5102d5dbe0a03c3ec1363ab12484c75db4da0fb82fcfdc",
+        "sha256_in_prefix": "a094d424523b547a4a5102d5dbe0a03c3ec1363ab12484c75db4da0fb82fcfdc",
+        "size_in_bytes": 4732
+      },
+      {
+        "_path": "Library/lib/pthread.lib",
+        "path_type": "hardlink",
+        "sha256": "6ed00da2062df888e9a9ae7a58c2af72f088ab2b6d3f2ae352eb044a3a6e90cd",
+        "sha256_in_prefix": "6ed00da2062df888e9a9ae7a58c2af72f088ab2b6d3f2ae352eb044a3a6e90cd",
+        "size_in_bytes": 29872
+      },
+      {
+        "_path": "Library/lib/pthreads.lib",
+        "path_type": "hardlink",
+        "sha256": "6ed00da2062df888e9a9ae7a58c2af72f088ab2b6d3f2ae352eb044a3a6e90cd",
+        "sha256_in_prefix": "6ed00da2062df888e9a9ae7a58c2af72f088ab2b6d3f2ae352eb044a3a6e90cd",
+        "size_in_bytes": 29872
+      },
+      {
+        "_path": "Library/lib/pthreads_static.lib",
+        "path_type": "hardlink",
+        "sha256": "c66b6f9486145b6005323794f4b2048c50f4cda87a5b5012a709d7726f80b3b6",
+        "sha256_in_prefix": "c66b6f9486145b6005323794f4b2048c50f4cda87a5b5012a709d7726f80b3b6",
+        "size_in_bytes": 354432
+      }
+    ],
+    "paths_version": 1
+  },
+  "requested_spec": "None",
+  "sha256": "576a228630a72f25d255a5e345e5f10878e153221a96560f2498040cd6f54005",
+  "size": 144301,
+  "subdir": "win-64",
+  "timestamp": 1537755684331,
+  "url": "https://conda.anaconda.org/conda-forge/win-64/pthreads-win32-2.9.1-hfa6e2cd_3.tar.bz2",
+  "version": "2.9.1"
+}

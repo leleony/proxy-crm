@@ -1,0 +1,30 @@
+{
+  "build": "1",
+  "build_number": 1,
+  "channel": "https://conda.anaconda.org/conda-forge/win-64",
+  "constrains": [],
+  "depends": [],
+  "extracted_package_dir": "D:\\Apps\\miniconda3\\pkgs\\msys2-conda-epoch-20160418-1",
+  "files": [
+    ".nonadmin"
+  ],
+  "fn": "msys2-conda-epoch-20160418-1.tar.bz2",
+  "link": {
+    "source": "D:\\Apps\\miniconda3\\pkgs\\msys2-conda-epoch-20160418-1",
+    "type": 1
+  },
+  "md5": "b0309b72560df66f71a9d5e34a5efdfa",
+  "name": "msys2-conda-epoch",
+  "package_tarball_full_path": "D:\\Apps\\miniconda3\\pkgs\\msys2-conda-epoch-20160418-1.tar.bz2",
+  "paths_data": {
+    "paths": [],
+    "paths_version": 1
+  },
+  "requested_spec": "None",
+  "sha256": "99358d58d778abee4dca82ad29fb58058571f19b0f86138363c260049d4ac7f1",
+  "size": 3227,
+  "subdir": "win-64",
+  "timestamp": 1608166968312,
+  "url": "https://conda.anaconda.org/conda-forge/win-64/msys2-conda-epoch-20160418-1.tar.bz2",
+  "version": "20160418"
+}

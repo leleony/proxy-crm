@@ -1,0 +1,63 @@
+{
+  "build": "hcfcfb64_9",
+  "build_number": 9,
+  "channel": "https://conda.anaconda.org/conda-forge/win-64",
+  "constrains": [],
+  "depends": [
+    "ucrt >=10.0.20348.0",
+    "vc >=14.2,<15",
+    "vc14_runtime >=14.29.30139"
+  ],
+  "extracted_package_dir": "D:\\Apps\\miniconda3\\pkgs\\libbrotlicommon-1.0.9-hcfcfb64_9",
+  "files": [
+    "Library/bin/brotlicommon.dll",
+    "Library/lib/brotlicommon.lib",
+    "Library/lib/pkgconfig/libbrotlicommon.pc",
+    ".nonadmin"
+  ],
+  "fn": "libbrotlicommon-1.0.9-hcfcfb64_9.conda",
+  "license": "MIT",
+  "license_family": "MIT",
+  "link": {
+    "source": "D:\\Apps\\miniconda3\\pkgs\\libbrotlicommon-1.0.9-hcfcfb64_9",
+    "type": 1
+  },
+  "md5": "5e0f7bd6f1d0747abd5da59cffb6f533",
+  "name": "libbrotlicommon",
+  "package_tarball_full_path": "D:\\Apps\\miniconda3\\pkgs\\libbrotlicommon-1.0.9-hcfcfb64_9.conda",
+  "paths_data": {
+    "paths": [
+      {
+        "_path": "Library/bin/brotlicommon.dll",
+        "path_type": "hardlink",
+        "sha256": "922a0ebcdaf8fafc2bd2a242778866b0770d6979c1935b81d30b7c71bedb2a0e",
+        "sha256_in_prefix": "922a0ebcdaf8fafc2bd2a242778866b0770d6979c1935b81d30b7c71bedb2a0e",
+        "size_in_bytes": 137216
+      },
+      {
+        "_path": "Library/lib/brotlicommon.lib",
+        "path_type": "hardlink",
+        "sha256": "86a3a0891dee1cc74470de503fc8b712d015ea671fc7a3047ec3cb4a11058ebc",
+        "sha256_in_prefix": "86a3a0891dee1cc74470de503fc8b712d015ea671fc7a3047ec3cb4a11058ebc",
+        "size_in_bytes": 3514
+      },
+      {
+        "_path": "Library/lib/pkgconfig/libbrotlicommon.pc",
+        "file_mode": "text",
+        "path_type": "hardlink",
+        "prefix_placeholder": "D:/bld/brotli-split_1687884251065/_h_env",
+        "sha256": "685450630043bd5698ef1728d8271dd2a987eadf261cd5388110570c4321a2df",
+        "sha256_in_prefix": "e301b5e76ac601dc9ce2b01e7bbf94c6203fe3e609e568ea8ca0ee248da95a4f",
+        "size_in_bytes": 357
+      }
+    ],
+    "paths_version": 1
+  },
+  "requested_spec": "None",
+  "sha256": "adef98f4013859c111da28ff1f66c2c65e90213fe8bac78b7fc83a15e26bc955",
+  "size": 72530,
+  "subdir": "win-64",
+  "timestamp": 1687886570242,
+  "url": "https://conda.anaconda.org/conda-forge/win-64/libbrotlicommon-1.0.9-hcfcfb64_9.conda",
+  "version": "1.0.9"
+}

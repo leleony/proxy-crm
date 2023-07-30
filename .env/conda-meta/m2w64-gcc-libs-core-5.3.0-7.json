@@ -1,0 +1,84 @@
+{
+  "build": "7",
+  "build_number": 7,
+  "channel": "https://conda.anaconda.org/conda-forge/win-64",
+  "constrains": [],
+  "depends": [
+    "m2w64-gmp",
+    "m2w64-libwinpthread-git",
+    "msys2-conda-epoch >=20160418"
+  ],
+  "extracted_package_dir": "D:\\Apps\\miniconda3\\pkgs\\m2w64-gcc-libs-core-5.3.0-7",
+  "files": [
+    "Library/mingw-w64/bin/libgcc_s_seh-1.dll",
+    "Library/mingw-w64/bin/libquadmath-0.dll",
+    "Library/mingw-w64/share/licenses/gcc-libs-core/COPYING.LIB",
+    "Library/mingw-w64/share/licenses/gcc-libs-core/COPYING.RUNTIME",
+    "Library/mingw-w64/share/licenses/gcc-libs-core/COPYING3",
+    "Library/mingw-w64/share/licenses/gcc-libs-core/README",
+    ".nonadmin"
+  ],
+  "fn": "m2w64-gcc-libs-core-5.3.0-7.tar.bz2",
+  "license": "GPL3+, partial:GCCRLE, partial:LGPL2+",
+  "link": {
+    "source": "D:\\Apps\\miniconda3\\pkgs\\m2w64-gcc-libs-core-5.3.0-7",
+    "type": 1
+  },
+  "md5": "4289d80fb4d272f1f3b56cfe87ac90bd",
+  "name": "m2w64-gcc-libs-core",
+  "package_tarball_full_path": "D:\\Apps\\miniconda3\\pkgs\\m2w64-gcc-libs-core-5.3.0-7.tar.bz2",
+  "paths_data": {
+    "paths": [
+      {
+        "_path": "Library/mingw-w64/bin/libgcc_s_seh-1.dll",
+        "path_type": "hardlink",
+        "sha256": "58bff7edc7864c52560c2db731b3e864f37fa352f0234e4887bb4d7c9ce1e2c6",
+        "sha256_in_prefix": "58bff7edc7864c52560c2db731b3e864f37fa352f0234e4887bb4d7c9ce1e2c6",
+        "size_in_bytes": 83230
+      },
+      {
+        "_path": "Library/mingw-w64/bin/libquadmath-0.dll",
+        "path_type": "hardlink",
+        "sha256": "698a68e44ea0f13601f4ab569f1097a01c305e28cc11e1c48d53c942fc841b17",
+        "sha256_in_prefix": "698a68e44ea0f13601f4ab569f1097a01c305e28cc11e1c48d53c942fc841b17",
+        "size_in_bytes": 334810
+      },
+      {
+        "_path": "Library/mingw-w64/share/licenses/gcc-libs-core/COPYING.LIB",
+        "path_type": "hardlink",
+        "sha256": "a9bdde5616ecdd1e980b44f360600ee8783b1f99b8cc83a2beb163a0a390e861",
+        "sha256_in_prefix": "a9bdde5616ecdd1e980b44f360600ee8783b1f99b8cc83a2beb163a0a390e861",
+        "size_in_bytes": 26527
+      },
+      {
+        "_path": "Library/mingw-w64/share/licenses/gcc-libs-core/COPYING.RUNTIME",
+        "path_type": "hardlink",
+        "sha256": "9d6b43ce4d8de0c878bf16b54d8e7a10d9bd42b75178153e3af6a815bdc90f74",
+        "sha256_in_prefix": "9d6b43ce4d8de0c878bf16b54d8e7a10d9bd42b75178153e3af6a815bdc90f74",
+        "size_in_bytes": 3324
+      },
+      {
+        "_path": "Library/mingw-w64/share/licenses/gcc-libs-core/COPYING3",
+        "path_type": "hardlink",
+        "sha256": "8ceb4b9ee5adedde47b31e975c1d90c73ad27b6b165a1dcd80c7c545eb65b903",
+        "sha256_in_prefix": "8ceb4b9ee5adedde47b31e975c1d90c73ad27b6b165a1dcd80c7c545eb65b903",
+        "size_in_bytes": 35147
+      },
+      {
+        "_path": "Library/mingw-w64/share/licenses/gcc-libs-core/README",
+        "path_type": "hardlink",
+        "sha256": "2bd5d7a51c0cf75fb7a20fd15b3afef8874ebc32535bb8e2ddb1cf400fe26407",
+        "sha256_in_prefix": "2bd5d7a51c0cf75fb7a20fd15b3afef8874ebc32535bb8e2ddb1cf400fe26407",
+        "size_in_bytes": 227
+      }
+    ],
+    "paths_version": 1
+  },
+  "requested_spec": "None",
+  "sha256": "58afdfe859ed2e9a9b1cc06bc408720cb2c3a6a132e59d4805b090d7574f4ee0",
+  "size": 219240,
+  "subdir": "win-64",
+  "timestamp": 1608163481341,
+  "url": "https://conda.anaconda.org/conda-forge/win-64/m2w64-gcc-libs-core-5.3.0-7.tar.bz2",
+  "version": "5.3.0"
+}

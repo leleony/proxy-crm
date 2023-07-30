@@ -1,0 +1,43 @@
+{
+  "build": "h63175ca_1",
+  "build_number": 1,
+  "channel": "https://conda.anaconda.org/conda-forge/win-64",
+  "constrains": [
+    "expat 2.5.0.*"
+  ],
+  "depends": [],
+  "extracted_package_dir": "D:\\Apps\\miniconda3\\pkgs\\libexpat-2.5.0-h63175ca_1",
+  "files": [
+    "Library/bin/libexpat.dll",
+    ".nonadmin"
+  ],
+  "fn": "libexpat-2.5.0-h63175ca_1.conda",
+  "license": "MIT",
+  "license_family": "MIT",
+  "link": {
+    "source": "D:\\Apps\\miniconda3\\pkgs\\libexpat-2.5.0-h63175ca_1",
+    "type": 1
+  },
+  "md5": "636cc3cbbd2e28bcfd2f73b2044aac2c",
+  "name": "libexpat",
+  "package_tarball_full_path": "D:\\Apps\\miniconda3\\pkgs\\libexpat-2.5.0-h63175ca_1.conda",
+  "paths_data": {
+    "paths": [
+      {
+        "_path": "Library/bin/libexpat.dll",
+        "path_type": "hardlink",
+        "sha256": "2a48a63b5a67cdf935324adfd4401863a8d40b9089785dd3dd34fe0aea1d8cea",
+        "sha256_in_prefix": "2a48a63b5a67cdf935324adfd4401863a8d40b9089785dd3dd34fe0aea1d8cea",
+        "size_in_bytes": 401920
+      }
+    ],
+    "paths_version": 1
+  },
+  "requested_spec": "None",
+  "sha256": "794b2a9be72f176a2767c299574d330ffb76b2ed75d7fd20bee3bbadce5886cf",
+  "size": 138689,
+  "subdir": "win-64",
+  "timestamp": 1680190844101,
+  "url": "https://conda.anaconda.org/conda-forge/win-64/libexpat-2.5.0-h63175ca_1.conda",
+  "version": "2.5.0"
+}
