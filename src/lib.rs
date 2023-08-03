@@ -41,13 +41,13 @@ fn proxy_crm(_py: Python, m: &PyModule) -> PyResult<()> {
         press_diff.dot(&v_matrix)
     }
 
-    fn sh_mask(prod: ArrayView1<'_, f64>, lambda_ip: Array1<f64>) -> Array1<f64> {
+    fn sh_mask(prod: ArrayView1<'_, f64>, lambda_ip: ArrayView1<'_, f64>) -> Array1<f64> {
         let n_t: usize = prod.raw_dim()[0];
         let n_inj: usize = lambda_ip.raw_dim()[0];
         
         let tensor: Array1<f64> = Array1::ones([n_inj]);
         let mut mask = Array1::zeros([n_t]);
-        let mut lambda_ip_result = lambda_ip.clone();
+        let mut lambda_ip_result = lambda_ip.to_owned();
 
         for t in 0..n_t {
             for i in 0..n_inj {
@@ -97,9 +97,9 @@ fn proxy_crm(_py: Python, m: &PyModule) -> PyResult<()> {
 
     #[pyfn(m)]
     #[pyo3(name = "sh_mask")]
-    fn sh_mask_py<'py>(py: Python<'py>, prod: PyReadonlyArray1<f64>, lambda_ip: PyReadonlyArray1<f64>) -> &'py PyArray1<f64> {
+    fn sh_mask_py<'py>(py: Python<'py>, prod: PyReadonlyArray1<f64>, lambda_ip: PyReadonlyArray1<'_, f64>) -> &'py PyArray1<f64> {
         let prod = prod.as_array();
-        let lambda_ip = lambda_ip.as_array().to_owned();
+        let lambda_ip = lambda_ip.as_array();
 
         let shut_in = sh_mask(prod, lambda_ip);
 

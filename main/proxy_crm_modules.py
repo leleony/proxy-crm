@@ -111,19 +111,13 @@ def rand_weights(n_prod: int, n_inj: int, axis: int = 0, seed: int | None = None
 
 
 class proxyCRM:
-    """A Capacitance Resistance Model history matcher.
+    """Capacitance Resistance Model using proxy method and comparison with PINN-Bayesian method.
 
     CRM uses a physics-inspired mass balance approach to explain production for waterfloods. It treats each injector-producer well pair as a system with mass input, output, and pressure related to the mass balance.
     In this case, the method of CRM will be CRM-Producer (CRMP), with the appliance of shut-in mask in case of well shut-in.
 
     Args
     ----------
-    prod : NDArray
-      Registering rate of production well for global usage in the functions.
-    inj : NDArray
-      Registering rate of injection well for global usage in the functions.
-    time: NDArray
-      The timestamp used for the project.
     pressure : NDArray
       The value of bottomhole pressure from the project. This is optional to the availability of the data.
 
@@ -131,11 +125,13 @@ class proxyCRM:
     ----------
     "Proxy Capacitance-Resistance Modeling for Well Production Forecasts in Case of Well Treatments" - Gubanova et al., 2022.
 
-    * Do note that this code is heavily adapted from pywaterflood by Frank Male (kindly visit his github page).
+    * Do note that this code is heavily adapted from 'pywaterflood' by Frank Male (kindly visit his github page).
     """
 
-    def __init__(self):
-      pass
+    def __init__(self, pressure: bool = False):
+      if type(pressure)!= bool:
+        msg = '(っ °Д °;)っ To initialize pressure, insert True-False (boolean) type. This is False in default.'
+        raise TypeError(msg)
 
     def fit(self, prod: NDArray, inj: NDArray, press: NDArray, time: NDArray, init_guess: NDArray = None, num_cores: int = 1, random: bool = False):
       """Build a CRM model from the prod and inj data.
@@ -181,7 +177,7 @@ class proxyCRM:
         def residual(x, prod):
           return sum((prod - self._calc_qhat(x, prod, inj, time, press_local, press)) ** 2)
 
-        return minimize(residual, x0, bounds=bounds, constraints=(), args=(prod,))
+        return minimize(residual, x0, bounds=bounds, constraints=constraints, args=(prod,))
 
       if num_cores == 1:
         results = map(fit_well, self.prod.T, press.T, init_guess)
@@ -396,19 +392,21 @@ class proxyCRM:
     def _get_bounds(self) -> tuple[tuple, tuple | dict]:
       """Create bounds for the model from initialized constraints."""
       n_inj = self.inj.shape[1]
+      n_prod = self.prod.shape[1]
       n = sum(self._opt_nums())
 
-      lb = np.full(n, 0)
-      ub = np.full(n, np.inf)
-      ub[:n_inj] = 1
-      bounds = tuple(zip(lb, ub))
+      lb_lambda = np.full(n, 0)
+      ub_lambda = np.full(n, np.inf)
+      ub_lambda[:n_inj] = 1
+
+      #lb_tau = np.full(n,0)
+      #ub_tau = np.full(n, np.inf)
+      #ub_tau[:n_prod] = 10
+
+      bounds = tuple(zip(lb_lambda, ub_lambda))#, zip(lb_tau, ub_tau)
+
+      #constraints_optimizer = {"type": "eq", "fun": bounds_cons}
       constraints_optimizer = ()
-
-      def bounds_cons(x):
-        x = x[:n_inj]
-        return np.sum(x) - 1
-
-      constraints_optimizer = {"type": "ineq", "fun": bounds_cons}
       
       return bounds, constraints_optimizer
 
