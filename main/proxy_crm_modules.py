@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-from pathlib import Path
 from typing import Any
 
 import numpy as np
@@ -10,7 +9,7 @@ from numpy.typing import NDArray
 from scipy.optimize import minimize
 import proxy_crm
 
-def q_prim(prod: NDArray, time: NDArray, lambda_prod: float, tau_prim: float) -> NDArray:
+def q_prim(prod: NDArray, time: NDArray, lambda_prod: float, tau_prim: float, mask: NDArray) -> NDArray:
   """Calculate primary prod contribution.
 
   Uses Arps equation with :math:`b=0`
@@ -28,66 +27,82 @@ def q_prim(prod: NDArray, time: NDArray, lambda_prod: float, tau_prim: float) ->
     Arps q_i factor
   tau_prim : float
     Arps time constant
+  mask : NDArray
+    Shut-in detector
 
   Returns
   ----------
   q_hat : NDArray
-    Calculated prod, size: Number of time steps
+    Calculated prod
+    size: Number of time steps
   """
-  return proxy_crm.q_prim(prod, time, lambda_prod, tau_prim)
+  return proxy_crm.q_prim(prod, time, lambda_prod, tau_prim, mask)
 
 
-def q_crm(inj: NDArray, time: NDArray, lambda_ip: NDArray, tau: float) -> NDArray:
+def q_crm(inj: NDArray, time: NDArray, lambda_ip: NDArray, sum_lambda_ip: NDArray, tau: float, mask: NDArray) -> NDArray:
     """Calculate per injector-producer pair prod (simplified tank).
 
-    Uses simplified CRMp model that assumes a single tau for each producer
+    Uses simplified CRMp model that assumes a single tau for each producer. This function is automatically run with 'calc_sh_mask'.
 
     Args
     ----------
     inj : NDArray
-        injected fluid in reservoir volumes, size: Number of time steps
+        injected fluid in reservoir volumes
+        size: Number of time steps
     time : NDArray
-        Producing times to forecast, size: Number of time steps
+        Producing times to forecast
+        size: Number of time steps
     lambda_ip : NDArray
         Connectivities between each injector and the producer
         size: Number of injectors
+    sum_lambda_ip: NDArray
+        Required to calculate the shut-in mask
+        size: Number of injectors
     tau : float
         Time constants all injectors and the producer
+    mask: NDArray
+        A sensor that will detect when the rate of production equals to zero
+        size: Number of time steps
 
     Returns
     ----------
     q_hat : NDArray
-        Calculated prod, size: Number of time steps
+        Calculated prod
+        size: Number of time steps x Number of injector wells.
     """
-    tau2 = np.full(inj.shape[1], tau)
-    return proxy_crm.q_crm(inj, time, lambda_ip, tau2)
+    return proxy_crm.q_crm(inj, time, lambda_ip, sum_lambda_ip, tau, mask)
 
 
-def q_bhp(press_local: NDArray, press: NDArray, v_matrix: NDArray) -> NDArray:
+def q_bhp(time: NDArray, tau: float, press: NDArray, prod_index: NDArray) -> NDArray:
     r"""Calculate the prod effect from bottom-hole pressure variation.
-
-    This looks like
-
-    .. math::
-        q_{BHP,j}(t_i) = \sum_{k} v_{kj}\left[ p_j(t_{i-1}) - p_k(t_i) \right]
 
     Args
     ----
-    press_local : NDArray
-        pressure for the well in question, shape: n_time
+    time : NDArray
+        Producing times to forecast
+        size: Number of time steps
+    tau : float
+        Time constants all injectors and the producer
+        size: Number of inejctors
     pressure : NDArray
-        bottomhole pressure, shape: n_time, n_producers
-    v_matrix : NDArray
-        connectivity between one producer and all producers, shape: n_producers
+        bottomhole pressure
+        shape: n_time, n_producers
+    prod_index : NDArray
+        Productivity Index of the case, size: n_producers
 
     Returns
     -------
     q : NDArray
         prod from changing BHP
-        shape: n_time
+        size: n_time
     """
-    return proxy_crm.q_bhp(press_local, press, v_matrix)
+    return proxy_crm.q_bhp(time, tau, press, prod_index)
 
+def sh_mask(prod: NDArray):
+  return proxy_crm.sh_mask(prod)
+
+def calc_sh_mask(lambda_ip: NDArray, sum_lambda_ip: NDArray, sh_mask:NDArray):
+  return proxy_crm.calc_sh_mask(lambda_ip, sum_lambda_ip, sh_mask)
 
 def rand_weights(n_prod: int, n_inj: int, axis: int = 0, seed: int | None = None) -> NDArray:
     """Generate random weights for producer-injector lambda_ip.
@@ -168,16 +183,19 @@ class proxyCRM:
       self.time = time
       self.press = press
 
+      sum_lambda_ip = np.zeros(inj.shape[1])
+
       if not init_guess:
         init_guess = self._get_init_guess(random=random)
       bounds, constraints = self._get_bounds()
+      
 
-      def fit_well(prod, press_local, x0):
+      def fit_well(prod, press, x0):
         # residual is an L2 norm
         def residual(x, prod):
-          return sum((prod - self._calc_qhat(x, prod, inj, time, press_local, press)) ** 2)
+          return sum((prod - self._calc_qhat(x, prod, inj, time, press, sum_lambda_ip)) ** 2)
 
-        return minimize(residual, x0, bounds=bounds, constraints=constraints, args=(prod,))
+        return minimize(residual, x0, bounds=bounds, constraints=constraints, args=(prod))
 
       if num_cores == 1:
         results = map(fit_well, self.prod.T, press.T, init_guess)
@@ -185,16 +203,16 @@ class proxyCRM:
         results = Parallel(n_jobs=num_cores)(delayed(fit_well)(prod, press, x0) for prod, press, x0 in zip(self.prod.T, press.T, init_guess))
 
       opts_perwell = [self._split_opts(r["x"]) for r in results]
-      lambda_perwell, tau_perwell, lambda_prod, tau_prim, lambda_press = map(list, zip(*opts_perwell))
+      lambda_ip_perwell, tau_perwell, lambda_prod, tau_prim, prod_index = map(list, zip(*opts_perwell))
 
-      self.lambda_ip: NDArray = np.vstack(lambda_perwell)
+      self.lambda_ip: NDArray = np.vstack(lambda_ip_perwell)
       self.tau: NDArray = np.vstack(tau_perwell)
       self.lambda_prod = np.array(lambda_prod)
       self.tau_prim = np.array(tau_prim)
-      self.lambda_press: NDArray = np.vstack(lambda_press)
+      self.prod_index: NDArray = np.array(prod_index)
       return self
 
-    def predict(self, inj=None, time=None, connections=None, prod=None):
+    def predict(self, inj=None, time=None, connections=None, prod=None, press=None):
       """Predict prod for a trained model.
 
       If the inj and time are not provided, this will use the training values
@@ -220,14 +238,19 @@ class proxyCRM:
         tau = connections.get("tau", self.tau)
         lambda_prod = connections.get("lambda_prod", self.lambda_prod)
         tau_prim = connections.get("tau_prim", self.tau_prim)
+        prod_index = connections.get("prod_index", self.prod_index)
       else:
         lambda_ip = self.lambda_ip
         tau = self.tau
         lambda_prod = self.lambda_prod
         tau_prim = self.tau_prim
+        prod_index = self.prod_index
 
       if prod is None:
         prod = self.prod
+
+      if press is None:
+        press = self.press
 
       n_prod = prod.shape[1]
 
@@ -236,16 +259,26 @@ class proxyCRM:
         raise TypeError(msg)
       if inj is None:
         inj = self.inj
+
+      n_inj = inj.shape[1]
+
       if time is None:
         time = self.time
       if time.shape[0] != inj.shape[0]:
         msg = "injection and time need same number of steps"
         raise ValueError(msg)
-
+      
+      sum_lambda_ip = np.zeros(inj.shape[1])
       q_hat = np.zeros((len(time), n_prod))
+
       for i in range(n_prod):
-        q_hat[:,i] += q_prim(prod[:, i], time, lambda_prod[i], tau_prim[i])
-        q_hat[:,i] += q_crm(inj, time, lambda_ip[i, :], tau[i])
+        sum_lambda_ip += lambda_ip[i,:]
+        mask = sh_mask(prod[:,i])
+        q_hat[:,i] += q_prim(prod[:, i], time, lambda_prod[i], tau_prim[i], mask)
+        for j in range(n_inj):
+          tau_crm = np.full(n_inj, tau[i])
+          q_hat[:,i] += q_crm(inj, time, lambda_ip[i, :], sum_lambda_ip, tau_crm, mask)[:,j]
+        q_hat[:,i] += q_bhp(time, tau[i], press[:, i], prod_index[i])
       return q_hat
 
     def set_rates(self, prod=None, inj=None, time=None):
@@ -340,7 +373,7 @@ class proxyCRM:
                 }
             ).to_excel(f, sheet_name="Primary prod")
 
-    def _get_init_guess(self, random=False):
+    def _get_init_guess(self, random=False) -> [NDArray, NDArray, NDArray, NDArray, NDArray]:
       """Create initial guesses for the CRM model parameters.
 
       :meta private:
@@ -372,17 +405,17 @@ class proxyCRM:
         lambda_prod_guess1 = np.ones(n_prod)
 
       tau_prim_guess1 = d_t * np.ones(n_prod)
-      tau_guess1 = d_t * np.ones((n_prod, 1))
+      tau_guess1 = np.ones((n_prod, 1))
+      
+      prod_index = np.ones((n_prod,1))/10
 
-      _, _, _, n_press = self._opt_nums()
-      press_guess = np.ones(n_press)
-
-      x0 = [np.concatenate([lambda_ip_guess1[i, :], tau_guess1[i, :], lambda_prod_guess1[[i]], tau_prim_guess1[[i]]]) for i in range(n_prod)]
-
-      return [np.concatenate([x0[i], press_guess]) for i in range(len(x0))]
+      guess = [np.concatenate([lambda_ip_guess1[i, :], tau_guess1[i, :], lambda_prod_guess1[[i]], tau_prim_guess1[[i]]]) for i in range(n_prod)]
+      x0 = [np.concatenate([guess[i], prod_index[i,:]])for i in range(len(guess))]
+      
+      return x0
 
     def _opt_nums(self) -> tuple[int, int, int, int]:
-      """Return the number of lambda_ip, tau, and primary prod parameters to fit."""
+      """Return the number of lambda_ip, tau, primary production, and production index parameters to fit."""
       n_lambda_ip = self.inj.shape[1]
       n_tau = 1
       n_prim = 2
@@ -391,31 +424,45 @@ class proxyCRM:
 
     def _get_bounds(self) -> tuple[tuple, tuple | dict]:
       """Create bounds for the model from initialized constraints."""
-      n_inj = self.inj.shape[1]
-      n_prod = self.prod.shape[1]
-      n = sum(self._opt_nums())
+      bounds = []
+      n_inj, _, _, _, = self._opt_nums()
 
-      lb_lambda = np.full(n, 0)
-      ub_lambda = np.full(n, np.inf)
-      ub_lambda[:n_inj] = 1
+      #lambda_ip bounds
+      bounds.extend([(0.0,1.0)] * n_inj)
 
-      #lb_tau = np.full(n,0)
-      #ub_tau = np.full(n, np.inf)
-      #ub_tau[:n_prod] = 10
+      #tau_bounds
+      bounds.append((0.0001,10))
 
-      bounds = tuple(zip(lb_lambda, ub_lambda))#, zip(lb_tau, ub_tau)
+      #lambda-prod bounds
+      bounds.append((0.0,1.0))
 
-      #constraints_optimizer = {"type": "eq", "fun": bounds_cons}
-      constraints_optimizer = ()
+      #tau-prim bounds
+      bounds.append((0.0001,10))
+
+      #prod-idx bounds
+      bounds.append((0.0,10))
       
+      bounds = tuple(bounds)
+
+      constraints_optimizer = ()
+
       return bounds, constraints_optimizer
 
-    def _calc_qhat(self, x: NDArray, prod: NDArray, inj: NDArray, time: NDArray, press_local: NDArray, press: NDArray):
-        lambda_ip, tau, lambda_prod, tau_prim, lambda_press = self._split_opts(x)
-        lambda_ip = self.sh_mask(prod,lambda_ip)
-        q_hat = q_prim(prod, time, lambda_prod, tau_prim)
-        q_hat += q_crm(inj, time, lambda_ip, tau)
-        q_hat += q_bhp(press_local, press, lambda_press)
+    def _calc_qhat(self, x: NDArray, prod: NDArray, inj: NDArray, time: NDArray, press: NDArray, sum_lambda_ip: NDArray):
+        lambda_ip, tau, lambda_prod, tau_prim, prod_index = self._split_opts(x)
+        _, _, _, n_prod = self._opt_nums()
+        mask = sh_mask(prod)
+        sum_lambda_ip += lambda_ip 
+
+        tau_crm = np.full(inj.shape[1], tau)
+        tau_bhp = np.full(n_prod, tau)
+        prod_index = np.full(n_prod, prod_index)
+
+        q_hat = q_prim(prod, time, lambda_prod, tau_prim, mask)
+        for i in range(inj.shape[1]):
+          q_hat += q_crm(inj, time, lambda_ip, sum_lambda_ip, tau_crm, mask)[:,i]
+
+        q_hat += q_bhp(time, tau_bhp, press, prod_index)
 
         return q_hat
 
@@ -429,7 +476,7 @@ class proxyCRM:
       lambda_prod = x[n_connectivity:][0]
       tau_prim = x[n_connectivity:][1]
 
-      lambda_press = x[n_connectivity + n_prim:]
+      prod_index = x[n_connectivity + n_prim:]
 
       if tau < 1e-10:
         tau = 1e-10
@@ -437,9 +484,4 @@ class proxyCRM:
       if tau_prim < 1e-10:
         tau_prim = 1e-10
 
-      return lambda_ip, tau, lambda_prod, tau_prim, lambda_press
-    
-    def sh_mask(self, prod: NDArray, lambda_ip: NDArray):
-      lambda_ip_copy = np.copy(lambda_ip)
-      
-      return proxy_crm.sh_mask(prod, lambda_ip_copy)
+      return lambda_ip, tau, lambda_prod, tau_prim, prod_index
