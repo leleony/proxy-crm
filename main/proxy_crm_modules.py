@@ -6,7 +6,7 @@ import numpy as np
 import pandas as pd
 from joblib import Parallel, delayed
 from numpy.typing import NDArray
-from scipy.optimize import minimize
+from scipy import optimize
 import proxy_crm
 
 def q_prim(prod: NDArray, time: NDArray, lambda_prod: float, tau_prim: float, mask: NDArray) -> NDArray:
@@ -195,7 +195,7 @@ class proxyCRM:
         def residual(x, prod):
           return sum((prod - self._calc_qhat(x, prod, inj, time, press, sum_lambda_ip)) ** 2)
 
-        return minimize(residual, x0, bounds=bounds, constraints=constraints, args=(prod))
+        return optimize.minimize(residual, x0, method='L-BFGS-B', bounds=bounds, constraints=constraints, args=(prod), options={'disp':True})
 
       if num_cores == 1:
         results = map(fit_well, self.prod.T, press.T, init_guess)
@@ -441,7 +441,7 @@ class proxyCRM:
 
       #prod-idx bounds
       bounds.append((0.0,10))
-      
+
       bounds = tuple(bounds)
 
       constraints_optimizer = ()
@@ -485,3 +485,24 @@ class proxyCRM:
         tau_prim = 1e-10
 
       return lambda_ip, tau, lambda_prod, tau_prim, prod_index
+    
+
+"""
+--------------------------------------------------------------
+Codes are cited from:
+@misc{Feinman2021,
+  author = {Feinman, Reuben},
+  title = {Pytorch-minimize: a library for numerical optimization with autograd},
+  publisher = {GitHub},
+  year = {2021},
+  url = {https://github.com/rfeinman/pytorch-minimize},
+}
+
+@misc{Male2023,
+  author = {Male, Frank},
+  title = {pywaterflood: Waterflood Connectivity Analysis},
+  publisher = {GitHub},
+  year = {2023},
+  url = {https://github.com/frank1010111/pywaterflood},
+}
+"""
