@@ -27,9 +27,9 @@ There are two types of data, the synthetic case data and [UNISIM-I](https://www.
 ## Simple Guideline
 You can first import the module as any names that you like. In this case, we will use `pCRM`.
 
-'''
+```
 import proxy_crm_modules as pCRM
-'''
+```
 
 Then, you can address the class `proxy_crm` as, for example:
 
