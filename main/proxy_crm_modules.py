@@ -6,9 +6,8 @@ import numpy as np
 import pandas as pd
 from joblib import Parallel, delayed
 from numpy.typing import NDArray
-from scipy.optimize import minimize, least_squares
+from scipy import optimize
 import proxy_crm
-from numba import jit, prange
 
 def q_prim(prod: NDArray, time: NDArray, lambda_prod: float, tau_prim: float) -> NDArray:
   """Calculate primary prod contribution.
@@ -70,6 +69,38 @@ def q_crm(inj: NDArray, time: NDArray, lambda_ip: NDArray, tau: float, mask: NDA
     """
     return proxy_crm.q_crm(inj, time, lambda_ip, tau, mask)
 
+def q_crm_fixed(inj: NDArray, time: NDArray, lambda_ip: NDArray, tau: float, mask: NDArray) -> NDArray:
+    """Calculate per injector-producer pair prod (simplified tank).
+
+    Uses simplified CRMp model that assumes a single tau for each producer. This function is automatically run with 'calc_sh_mask'.
+
+    Args
+    ----------
+    inj : NDArray
+        injected fluid in reservoir volumes
+        size: Number of time steps
+    time : NDArray
+        Producing times to forecast
+        size: Number of time steps
+    lambda_ip : NDArray
+        Connectivities between each injector and the producer
+        size: Number of injectors
+    tau : float
+        Time constants all injectors and the producer
+    mask: NDArray
+        A sensor that will detect when the rate of production equals to zero
+        size: Number of time steps
+
+    Returns
+    ----------
+    q_hat : NDArray
+        Calculated prod
+        size: Number of time steps x Number of injector wells.
+    """
+    return proxy_crm.q_crm_fixed(inj, time, lambda_ip, tau, mask)
+
+def q_crm_gas(inj: NDArray, time: NDArray, lambda_ip: NDArray, tau: float, mask: NDArray, rho_gas: NDArray) -> NDArray:
+  return proxy_crm.q_crm_gas(inj, time, lambda_ip, tau, mask, rho_gas)
 
 def q_bhp(time: NDArray, tau: float, press: NDArray, prod_index: NDArray, mask:NDArray) -> NDArray:
     r"""Calculate the prod effect from bottom-hole pressure variation.
@@ -102,6 +133,9 @@ def sh_mask(prod: NDArray):
 def calc_sh_mask(lambda_ip: NDArray, sh_mask:NDArray):
   return proxy_crm.calc_sh_mask(lambda_ip, sh_mask)
 
+def objective_add(rate_prim, rate_crm, rate_bhp):
+  return proxy_crm.objective_add(rate_prim, rate_crm, rate_bhp)
+
 def rand_weights(n_prod: int, n_inj: int, axis: int = 0, seed: int | None = None) -> NDArray:
     """Generate random weights for producer-injector lambda_ip.
 
@@ -131,22 +165,50 @@ class proxyCRM:
 
     Args
     ----------
+    primary: NDArray
+      To state whether the primary production is used/not. this refers to q_prim.
     pressure : NDArray
       The value of bottomhole pressure from the project. This is optional to the availability of the data.
+    gas inject: NDArray
+      To state whether the injection type is gas or water. Default to TRUE (water). If FALSE (gas), it will assume immiscible gas flooding case.
 
     References
     ----------
-    "Proxy Capacitance-Resistance Modeling for Well Production Forecasts in Case of Well Treatments" - Gubanova et al., 2022.
+    [1]"Proxy Capacitance-Resistance Modeling for Well Production Forecasts in Case of Well Treatments" - Gubanova et al., 2022.
 
     * Do note that this code is heavily adapted from 'pywaterflood' by Frank Male (kindly visit his github page).
     """
 
-    def __init__(self, pressure: bool = False):
+    def __init__(self, primary: bool = True, pressure: bool = True, gas_inject: bool = False, inject_type: str = 'fixed'):
+      """To initialize the class. Insert these true/false statements.
+      """
+      self.primary = primary
+      self.pressure = pressure
+      self.gas_inject = gas_inject
+      self.inject_type = inject_type
+
+      if type(primary) != bool:
+        msg = '(っ °Д °;)っ To initialize primary production, insert True-False (boolean) type. This is True in default.'
+        raise TypeError(msg)
       if type(pressure)!= bool:
         msg = '(っ °Д °;)っ To initialize pressure, insert True-False (boolean) type. This is False in default.'
         raise TypeError(msg)
+      if type(gas_inject) != bool:
+        msg = '(っ °Д °;)っ To initialize gas injection CRM, insert True-False (boolean) type. This is True in default.'
+        raise TypeError(msg)
+      
+      if primary == True:
+        self.q_prim = q_prim
+      if pressure == True:
+        self.q_CRM = q_crm
+      if gas_inject == True:
+        self.q_CRM = q_crm_gas
+      if inject_type == 'linear':
+        self.q_CRM = q_crm
+      elif inject_type == 'fixed':
+        self.q_CRM = q_crm_fixed
 
-    def fit(self, prod: NDArray, inj: NDArray, press: NDArray, time: NDArray, init_guess: NDArray = None, num_cores: int = 1, random: bool = False):
+    def fit(self, prod: NDArray, inj: NDArray, press: NDArray, time: NDArray, init_guess: NDArray = None, num_cores: int = 1, random: bool = False, ftol: float = 1e-5):
       """Build a CRM model from the prod and inj data.
 
       Args
@@ -190,9 +252,9 @@ class proxyCRM:
         def residual(x, prod, press, inj, time):
           return np.sum(
             np.sum(
-            np.square(prod - self.obj_func(x, prod, inj, time, press)),axis=0) / np.square(np.max(prod,axis=0)))
+            np.square(prod - self.obj_func(x, prod, inj, time, press)),axis=0) / np.max(prod, axis=0)**2)
 
-        return minimize(residual, x0, bounds=bounds, args=(self.prod,self.press,self.inj,self.time), options={'disp':True, 'ftol':1e-3, 'maxiter':500})
+        return optimize.minimize(residual, x0, method='L-BFGS-B', bounds=bounds, args=(self.prod,self.press,self.inj,self.time), options={'disp':True, 'ftol':ftol, 'maxiter':500})
 
       if num_cores == 1:
         results = map(fit_well, init_guess, self.prod, press, inj, time)
@@ -269,18 +331,15 @@ class proxyCRM:
         raise ValueError(msg)
 
       n_time = time.shape[0]
-
-      q_hat = np.zeros((len(time), n_prod))
       
       mask = sh_mask(prod)
       lambda_ip_t = np.tile(lambda_ip.reshape((n_prod,n_inj)), (n_time,1,1))
 
-      for j in prange(n_prod):
-        q_hat[:,j] += q_prim(prod, time, lambda_prod, tau_prim)[j]
-        q_hat[:,j] += np.sum(q_crm(inj, time, lambda_ip_t, tau, mask), axis=2)[:,j]
-        q_hat[:,j] += q_bhp(time, tau, press, prod_index, mask)[:,j]
+      q1 = q_prim(prod, time, lambda_prod, tau_prim)
+      q2 = np.sum(self.q_CRM(inj, time, lambda_ip_t, tau, mask), axis=2)
+      q3 = q_bhp(time, tau, press, prod_index, mask)
       
-      return q_hat
+      return objective_add(q1, q2, q3)
 
     def set_rates(self, prod=None, inj=None, time=None):
       """Set prod and inj rates and time array.
@@ -326,7 +385,7 @@ class proxyCRM:
       if tau_prim is not None:
         self.tau_prim = tau_prim
 
-    def residual(self, prod=None, inj=None, time=None):
+    def residual(self, prod=None, inj=None, time=None, press=None):
       """Calculate the prod minus the predicted prod for a trained model.
 
       If the prod, inj, and time are not provided, this will use the training values
@@ -346,7 +405,7 @@ class proxyCRM:
       residual : 
         The true prod data minus the predictions, shape (n_time, n_producers)
         """
-      q_hat = self.predict(inj, time)
+      q_hat = self.predict(inj=inj, time=time, press=press)
       if prod is None:
         prod = self.prod
       return prod - q_hat
@@ -408,8 +467,10 @@ class proxyCRM:
       
       prod_index = np.ones(n_prod)/10
 
-      x0 = [np.concatenate([lambda_ip_guess1.reshape(-1), tau_guess1, lambda_prod_guess1, tau_prim_guess1, prod_index])]
-      return x0
+      if self.primary:
+        return [np.concatenate([lambda_ip_guess1.reshape(-1), tau_guess1, lambda_prod_guess1, tau_prim_guess1, prod_index])]
+      else:
+        return [np.concatenate([lambda_ip_guess1.reshape(-1), tau_guess1])]
 
     def _opt_nums(self) -> tuple[int, int, int, int]:
       """Return the number of lambda_ip, tau, primary production, and production index parameters to fit."""
@@ -440,7 +501,6 @@ class proxyCRM:
 
       return bounds, constraints_optimizer
 
-    @jit(parallel=True)
     def obj_func(self, x: NDArray, prod: NDArray, inj: NDArray, time: NDArray, press: NDArray):
       lambda_ip, tau, lambda_prod, tau_prim, prod_index = self._split_opts(x)
       n_prod = prod.shape[1]
@@ -448,16 +508,13 @@ class proxyCRM:
       n_time = time.shape[0]
       mask = sh_mask(prod)
 
-      q_hat = np.zeros((len(time),n_prod))
-
       lambda_ip_t = np.tile(lambda_ip.reshape((n_prod,n_inj)), (n_time,1,1))
 
-      for j in prange(n_prod):
-        q_hat[0,j] += q_prim(prod, time, lambda_prod, tau_prim)[j]
-        q_hat[:,j] += np.sum(q_crm(inj, time, lambda_ip_t, tau, mask), axis=2)[:,j]
-        q_hat[:,j] += q_bhp(time, tau, press, prod_index, mask)[:,j]
+      q1 = q_prim(prod, time, lambda_prod, tau_prim)
+      q2 = np.sum(self.q_CRM(inj, time, lambda_ip_t, tau, mask), axis=2)
+      q3 = q_bhp(time, tau, press, prod_index, mask)
 
-      return q_hat
+      return objective_add(q1, q2, q3)
 
     def _split_opts(self, x: NDArray):
       n_lambda_ip, n_tau, n_prim, _ = self._opt_nums()
