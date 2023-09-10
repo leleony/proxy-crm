@@ -70,14 +70,14 @@ class frac_flow:
 
             return cwi
         
-        log_x = np.log(cumulative_water(lambda_ip, inj))
-        log_y = np.log(wor)
+        log_x = np.log10(cumulative_water(lambda_ip, inj))
+        log_y = np.log10(wor)
 
         curve = np.polyfit(log_x, log_y, 1)
 
         beta = curve[0]
         alpha = curve[1]
-        y = beta * log_x - np.log(alpha)
+        y = beta * log_x - np.log10(alpha)
 
         self.log_log_plot(cwi=cumulative_water(lambda_ip, inj), wor=wor, log_x=log_x, y=y)
         
