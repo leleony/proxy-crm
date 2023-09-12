@@ -257,7 +257,7 @@ class proxyCRM:
         return optimize.minimize(residual, x0, method='L-BFGS-B', bounds=bounds, args=(self.prod,self.press,self.inj,self.time), options={'disp':True, 'ftol':ftol, 'maxiter':500})
 
       if num_cores == 1:
-        results = map(fit_well, init_guess, self.prod, press, inj, time)
+        results = [fit_well(x0, self.prod, self.press, self.inj, self.time) for x0 in init_guess]
       else:
         results = Parallel(n_jobs=num_cores,verbose=10)(delayed(fit_well)(
           x0, prod, press, inj, time) 
