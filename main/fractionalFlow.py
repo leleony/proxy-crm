@@ -2,10 +2,10 @@ from __future__ import annotations
 
 import numpy as np
 from numpy.typing import NDArray
-from scipy.optimize import curve_fit
 from numba import jit
 import matplotlib.pyplot as plt
 import scienceplots
+from lmfit import Minimizer, Parameters, report_fit
 
 import proxy_crm
 
@@ -193,7 +193,7 @@ class frac_flow_fit:
             self.alpha[j] = params[f'alpha_{j}']
             self.beta[j] = params[f'beta_{j}']
         
-        oil_model = self.f_oil(lambda_ip=lambda_ip, inj=inj, alpha=self.alpha, beta= self.beta)
+        oil_model = self.eq_loop(lambda_ip=lambda_ip, inj=inj, alpha=self.alpha, beta= self.beta)
         return oil - (oil_model * liquid)
 
         # Creating parameters
@@ -210,13 +210,3 @@ class frac_flow_fit:
         final = oil + result.residual.reshape(self.n_time, self.n_prod)
 
         return final, self.alpha, self.beta, report_fit(result.params)
-
-    def f_oil(self, f_ij, inj, alpha, beta):
-        # Calculates oil-cut for CRMP method.
-        for t in range(self.n_time):
-            for j in range(self.n_prod):
-                for i in range(self.n_inj):
-                self.conv[t,j] = alpha[j] * (f_ij[j,i] * inj[t,i]) ** beta[j]
-                self.f_oil[t,j] = 1.0 / (1.0 + self.conv[t,j])
-
-        return self.f_oil
