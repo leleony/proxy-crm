@@ -5,6 +5,8 @@ from numpy.typing import NDArray
 from numba import jit
 import matplotlib.pyplot as plt
 import scienceplots
+
+from scipy.optimize import curve_fit
 from lmfit import Minimizer, Parameters, report_fit
 
 import proxy_crm
@@ -152,9 +154,9 @@ class frac_flow_fit:
         self.n_inj = self.inj.shape[1]
 
         if len(lambda_ip.shape) < 2: # Check whether lambda_ip is already reshaped
-        self.lambda_ip = lambda_ip.reshape((self.n_prod, self.n_ij))
+            self.lambda_ip = lambda_ip.reshape((self.n_prod, self.n_ij))
         elif len(lambda_ip.shape) == 2:
-        self.lambda_ip = lambda_ip
+            self.lambda_ip = lambda_ip
 
         # Create zero values for the target of the code (the predicted data and params)
         self.f_oil = self.q_oil = np.zeros((self.n_time, self.n_prod))
@@ -189,19 +191,19 @@ class frac_flow_fit:
 
         # Defining objective function
         def fcn_min(params, oil, liquid, lambda_ip, inj):
-        for j in range(self.n_prod):
-            self.alpha[j] = params[f'alpha_{j}']
-            self.beta[j] = params[f'beta_{j}']
+            for j in range(self.n_prod):
+                self.alpha[j] = params[f'alpha_{j}']
+                self.beta[j] = params[f'beta_{j}']
         
-        oil_model = self.eq_loop(lambda_ip=lambda_ip, inj=inj, alpha=self.alpha, beta= self.beta)
-        return oil - (oil_model * liquid)
+            oil_model = self.eq_loop(lambda_ip=lambda_ip, inj=inj, alpha=self.alpha, beta= self.beta)
+            return oil - (oil_model * liquid)
 
         # Creating parameters
         params = Parameters()
         for j in range(self.n_prod):
-        for i in range(self.n_inj):
-            params.add(f'alpha_{j}', value=1e-10, min=0)
-            params.add(f'beta_{j}', value=0.01, min=0)
+            for i in range(self.n_inj):
+                params.add(f'alpha_{j}', value=1e-10, min=0)
+                params.add(f'beta_{j}', value=0.01, min=0)
 
         # Solving with lmfit minimizer, methods can be customized.
         solve = Minimizer(fcn_min, params, fcn_args=(oil, liquid, lambda_ip, inj))
