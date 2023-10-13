@@ -10,12 +10,10 @@ from scipy import optimize
 import proxy_crm
 
 def q_prim(prod: NDArray, time: NDArray, lambda_prod: float, tau_prim: float) -> NDArray:
-  """Calculate primary prod contribution.
-
-  Uses Arps equation with :math:`b=0`
+  """Calculate primary prod contribution. This is equivalent to this equation:
 
   .. math::
-    q_{p}(t) = q_i e^{-bt}
+    q_(j)(t_(n)) = q_(j)(t_(0))e^(-(t_(n)-t_(0))/(tau _(j)))
 
   Args
   ----------
@@ -42,7 +40,10 @@ def q_prim(prod: NDArray, time: NDArray, lambda_prod: float, tau_prim: float) ->
 def q_crm(inj: NDArray, time: NDArray, lambda_ip: NDArray, tau: float, mask: NDArray) -> NDArray:
     """Calculate per injector-producer pair prod (simplified tank).
 
-    Uses simplified CRMp model that assumes a single tau for each producer. This function is automatically run with 'calc_sh_mask'.
+    Uses simplified CRMP model that assumes a single tau for each producer. This function is automatically run with 'calc_sh_mask'.
+    q_crm = sum_(k=1)^(n) {e^(-(t_(n)-t_(k))/(tau _(j))) * (1-e^(-(Deltat_(k))/(tau _(j)))) * sum_(i=1)^(N_(inj))f_(ij)I_(i)(t_(k))}
+
+    Considers linear change of injection rate.
 
     Args
     ----------
@@ -72,7 +73,7 @@ def q_crm(inj: NDArray, time: NDArray, lambda_ip: NDArray, tau: float, mask: NDA
 def q_crm_fixed(inj: NDArray, time: NDArray, lambda_ip: NDArray, tau: float, mask: NDArray) -> NDArray:
     """Calculate per injector-producer pair prod (simplified tank).
 
-    Uses simplified CRMp model that assumes a single tau for each producer. This function is automatically run with 'calc_sh_mask'.
+    Uses simplified CRMP model that assumes a single tau for each producer. This function is automatically run with 'calc_sh_mask'. This considers fixed injection rate.
 
     Args
     ----------
@@ -100,6 +101,9 @@ def q_crm_fixed(inj: NDArray, time: NDArray, lambda_ip: NDArray, tau: float, mas
     return proxy_crm.q_crm_fixed(inj, time, lambda_ip, tau, mask)
 
 def q_crm_gas(inj: NDArray, time: NDArray, lambda_ip: NDArray, tau: float, mask: NDArray, rho_gas: NDArray) -> NDArray:
+  """
+  WORK IN PROGRESS
+  """
   return proxy_crm.q_crm_gas(inj, time, lambda_ip, tau, mask, rho_gas)
 
 def q_bhp(time: NDArray, tau: float, press: NDArray, prod_index: NDArray, mask:NDArray) -> NDArray:
@@ -174,7 +178,11 @@ class proxyCRM:
 
     References
     ----------
-    [1]"Proxy Capacitance-Resistance Modeling for Well Production Forecasts in Case of Well Treatments" - Gubanova et al., 2022.
+    [1] "Proxy Capacitance-Resistance Modeling for Well Production Forecasts in Case of Well Treatments" - Gubanova et al., 2022.
+    [2] "Optimization Of Oil Production Based On A Capacitance Model Of Production And Injection Rates" - Lake et al., 2007
+    [3] "The use of capacitance–resistance models for rapid estimation of waterflood performance and optimization" - Sayarpour et al., 2009
+    [4] "Reservoir characterization using dynamic capacitance–resistance model with application to shut-in and horizontal wells" - Salehian & Çınar, 2019
+    [5] "UNISIM-I-M: Benchmark Case Proposal for Oil Reservoir Management Decision-Making" - Gaspar et al., 2016
 
     * Do note that this code is heavily adapted from 'pywaterflood' by Frank Male (kindly visit his github page).
     """
@@ -340,75 +348,6 @@ class proxyCRM:
       q3 = q_bhp(time, tau, press, prod_index, mask)
       
       return objective_add(q1, q2, q3)
-
-    def set_rates(self, prod=None, inj=None, time=None):
-      """Set prod and inj rates and time array.
-
-      Args
-      -----
-      prod : NDArray
-        prod rates with shape (n_time, n_producers)
-      inj : NDArray
-        inj rates with shape (n_time, n_injectors)
-      time : NDArray
-        timesteps with shape n_time
-      """
-      if prod is not None:
-        self.prod = prod
-      if inj is not None:
-        self.inj = inj
-      if time is not None:
-        self.time = time
-
-    def set_connections(self, lambda_ip=None, tau=None, lambda_prod=None, tau_prim=None):
-      """Set waterflood properties.
-
-      Args
-      -----
-      lambda_ip : NDArray
-        connectivity between injector and producer
-        shape: n_gains, n_producers
-      tau : NDArray
-        time-constant for inj to be felt by prod
-        shape: either n_producers or (n_gains, n_producers)
-      lambda_prod : NDArray
-        gain on primary prod, shape: n_producers
-      tau_prim : NDArray
-        Arps time constant for primary prod, shape: n_producers
-      """
-      if lambda_ip is not None:
-        self.lambda_ip = lambda_ip
-      if tau is not None:
-        self.tau = tau
-      if lambda_prod is not None:
-        self.lambda_prod = lambda_prod
-      if tau_prim is not None:
-        self.tau_prim = tau_prim
-
-    def residual(self, prod=None, inj=None, time=None, press=None):
-      """Calculate the prod minus the predicted prod for a trained model.
-
-      If the prod, inj, and time are not provided, this will use the training values
-
-      Args
-      ----------
-      prod : NDArray
-        The prod rates observed, shape: (n_timesteps, n_producers)
-      inj : NDArray
-        The inj rates to input to the system,
-        shape: (n_timesteps, n_injectors)
-      time : NDArray
-        The timesteps to predict
-
-      Returns
-      ----------
-      residual : 
-        The true prod data minus the predictions, shape (n_time, n_producers)
-        """
-      q_hat = self.predict(inj=inj, time=time, press=press)
-      if prod is None:
-        prod = self.prod
-      return prod - q_hat
 
     def to_excel(self, fname: str):
         """Write trained model to an Excel file.
