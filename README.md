@@ -25,6 +25,16 @@ From the equation, we will obtain the fraction of the oil, which will be multipl
 There are two types of data, the synthetic case data and [UNISIM-I](https://www.unisim.cepetro.unicamp.br/benchmarks/en/unisim-i/overview) data, specifically [UNISIM-I-M](https://www.unisim.cepetro.unicamp.br/benchmarks/en/unisim-i/unisim-i-m) [5]. The synthetic case data itself is a field with the grid of `20×20×3` and homogeneous permeability. It has 5 injector and 4 producer wells, and is divided into base (no shut-in period), single shut-in well, and two shut-in wells cases.
 
 ## Simple Guideline
+Proxy CRM can now be installed by using (big disclaimer on the still ongoing dependencies management):
+```
+pip install proxy-crm
+```
+
+To automatically create a conda environment (due to the aforementioned dependecies problem), you can always use:
+```
+conda env create --file requirements.yml
+```
+
 You can first import the module as any names that you like. In this case, we will use `pCRM`.
 
 ```
