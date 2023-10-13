@@ -4,6 +4,8 @@ build-backend = "maturin"
 
 [project]
 name = "proxy_crm"
+version = "0.2.0"
+authors = ["Leony"]
 requires-python = ">=3.7"
 classifiers = [
     "Programming Language :: Rust",
@@ -11,6 +13,22 @@ classifiers = [
     "Programming Language :: Python :: Implementation :: PyPy",
 ]
 
+[project.urls]
+repository = "https://github.com/leleony/proxy_crm"
 
 [tool.maturin]
 features = ["pyo3/extension-module"]
+bindings = "pyo3"
+python-source = "python"
+
+[tool.mypy]
+ignore_missing_imports = true
+
+[tool.poetry]
+name = "proxy_crm"
+version = "0.2.0"
+description = "History matching using Proxy Capacitance-Resistance Model (Gubanova et al., 2022) for producer well shut-in"
+authors = ["Leony <le.leony00@gmail.com>"]
+
+[tool.poetry.dependencies]
+python = "^3.7"
